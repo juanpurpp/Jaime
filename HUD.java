@@ -1,17 +1,21 @@
 package Jaime;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.*;
 import javafx.scene.image.Image;
 public class HUD{
+	public static Boolean visible=true;
 	private static final Image vidatxt;
 	private static final Image ptstxt;
 	private static final Image bueno;
 	private static final Image ulti;
+	private static final Image ultitxt;
     static{
 		vidatxt =new Image(HUD.class.getResourceAsStream("img/vidatxt.png"));
 		ptstxt = new Image(HUD.class.getResourceAsStream("img/ptstxt.png"));
 		bueno = new Image(HUD.class.getResourceAsStream("img/bueno.png"));
 		ulti = new Image(HUD.class.getResourceAsStream("img/ulti.png"));
+		ultitxt = new Image(HUD.class.getResourceAsStream("img/ultitxt.png"));
     }
 	public static void render(GraphicsContext idea,Jugador jug){
 		//dibujando cuadro;
@@ -24,10 +28,14 @@ public class HUD{
 		idea.strokeRect(0,600,1280,700);
 		//termino cuadro
 		Barra.render(idea,Color.LIME, 50,650, jug.vidaTotal, 10, jug.getVida(), (float)2.5); //dibujando vida
-		Barra.render(idea,Color.DARKBLUE, 640-250,650, Jugador.ultiPts, 30, jug.getPts(), (float)1);
-		idea.drawImage(vidatxt, 100,560);
-		idea.drawImage(ptstxt, 640-60,560);
-		if(jug.isUltiOn()) idea.drawImage(ulti, 1100,615,80,80);
+		Barra.render(idea,Color.CYAN, 640-250,650, Jugador.ultiPts, 30, jug.getPts(), (float)1);
+		idea.setFill(Color.CYAN);
+		idea.setFont(Font.font(20.0));
+		idea.fillText(jug.getPts()+"", 640-250, 630,50);
+		idea.drawImage(vidatxt, 100,605);
+		idea.drawImage(ptstxt, 640-60,605);
+		idea.drawImage(ultitxt, 925, 605);
+		if(jug.isUltiOn()) idea.drawImage(ulti, 980,615,80,80);
 		else idea.drawImage(bueno, 1100, 615,80,80);
 	}
 }

@@ -3,6 +3,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.image.Image;
 import java.util.Random;
+
 public class Enemigo extends Ente{
 	private int movs;
 	private int dir;
@@ -11,7 +12,7 @@ public class Enemigo extends Ente{
 	}
 	public void accion(Entorno ent){
 		Random rand = new Random();
-		for(int i = 0;i<this.vel;i++){
+		for(int i = 0;i<this.vel && this.vida >= 0;i++){
 			float oldx = this.x, oldy = this.y;
 
 			if(dir == 0) this.x-=1;
@@ -25,7 +26,7 @@ public class Enemigo extends Ente{
 			}
 			else this.col.oval.update(this.x-oldx, this.y-oldy);
             if(colOn && ent.detectCol(this)){
-				System.out.println("Colision xd");
+				//System.out.println("Colision xd");
 				if(this.col.tipo == true) this.col.oval.update(oldx - this.x, oldy- this.y);
 				else{
 					for(int j = 0; j<this.col.cuadros.length;j++){

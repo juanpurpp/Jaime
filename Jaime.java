@@ -15,6 +15,7 @@ import javafx.util.Duration;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 
 public class Jaime extends Application{
 	static Stage window;
@@ -52,6 +53,7 @@ public class Jaime extends Application{
 		}));
 		clock.setCycleCount(Timeline.INDEFINITE);
 		Scene escena = new Scene(grupo);
+		escena.setCursor(Cursor.NONE);
         escena.setOnKeyPressed(e->{
 			if(e.getEventType() == KeyEvent.KEY_PRESSED) jug.getAccion(e);
 
@@ -63,6 +65,9 @@ public class Jaime extends Application{
 		});
         lienzo.setOnMouseMoved(e->{
             jug.mira.setPos((float)e.getX(), (float)e.getY());
+		});
+		lienzo.setOnMouseClicked(e->{
+			jug.atacar(ent[0]);
 		});
 
         window.setScene(escena);

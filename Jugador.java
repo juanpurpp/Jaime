@@ -5,11 +5,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
+import java.lang.Math;
+import java.util.Random;
 public class Jugador extends Ente{
 	public Mira mira;
 	private int pts = 0;
-	private Boolean ulti = true;
+	private Boolean ulti = false;
 	public static int ultiPts =500;
 	public Jugador(Image cont, float x, float y, float ancho, float alto, int vel, int atq,int vida){
 		super(cont,x,y,ancho,alto,vel,atq,vida);
@@ -43,10 +44,24 @@ public class Jugador extends Ente{
 	public void addMira(Image imgmira, float x, float y, float ancho, float largo){
 		this.mira = new Mira(imgmira,x,y,ancho,largo);
 	}
-	
-	/*public void hudVisible(Boolean opcion){
-		hud.visible = opcion;
-	}*/
+	public void atacar(Entorno ent){
+		Random rand = new Random();
+		int dano = 10 + new Random().nextInt(Math.abs(this.atq-10));
+		for(Ente enemigo:ent.entes){
+			if(enemigo != null && enemigo != this && enemigo.vida >= 0){
+				if(this.mira.distancia(enemigo.x+(enemigo.ancho/2),enemigo.y+(enemigo.alto/2))<enemigo.col.oval.radio){
+					enemigo.vida -= dano;
+					this.pts+=dano;
+					if(enemigo.vida <= 0){
+						this.pts+=50;
+					}
+				}
+			}
+		}
+	}
+	public void hudVisible(Boolean opcion){
+		HUD.visible = opcion;
+	}
     public void getAccion(KeyEvent e){
         if(e.getCode() == KeyCode.A ) this.movimientoA = true;
         if(e.getCode() == KeyCode.D ) this.movimientoD = true;

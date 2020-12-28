@@ -26,4 +26,8 @@ public class Mira{
 	public float getAlto(){
 		return this.alto ;
 	}
+	public double distancia(float dx, float dy){
+		
+		return Math.sqrt( Math.pow(dx - (this.x+(this.ancho/2)),2) + Math.pow(dy-(this.y+(this.alto/2)),2 ));
+	}
 }
