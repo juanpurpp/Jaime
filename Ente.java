@@ -3,6 +3,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import java.lang.Math;
 
 public class Ente{
@@ -15,8 +16,10 @@ public class Ente{
     public Boolean movimientoW = false;
 	public Boolean movimientoS = false;
 	public Colision col;
-	protected Boolean colOn = true;;
-	public Ente(Image cont, float x, float y, float ancho, float alto, int vel, int atq){
+	public int vidaTotal;
+	protected int vida;
+	protected Boolean colOn = true;
+	public Ente(Image cont, float x, float y, float ancho, float alto, int vel, int atq, int vidaTotal){
         this.cont = cont;
         this.x = x;
         this.y = y;
@@ -24,9 +27,14 @@ public class Ente{
         this.alto =alto;
 		this.vel = vel;
 		this.atq = atq;
+		this.vidaTotal = vidaTotal;
+		this.vida = vidaTotal;
 	}
 	public void render(GraphicsContext idea){
-		idea.drawImage(cont,x,y,ancho, alto);
+		idea.drawImage(this.cont,this.x,this.y,this.ancho, this.alto);
+		idea.setFill(Color.DIMGRAY);
+		float rectx = this.x+(this.ancho - this.vidaTotal) / 2;
+		Barra.render(idea, Color.LIME, rectx, this.y+10, vidaTotal, 10, vida,1);
 	}
 	public Boolean inCol(Colision difCol){
 		if(this.col.tipo == false){ //colision cuadral esa palabra no existe pero no me importa

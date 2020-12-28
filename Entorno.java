@@ -22,8 +22,8 @@ public class Entorno{
         if(this.bg != null) idea.drawImage(this.bg, 0,0,this.xMax,this.yMax);
         for(Ente renderizando : this.entes) {
             if(renderizando !=null) renderizando.render(idea);
-            if(renderizando !=null && colVisual) renderizando.col.render(idea);
-        }
+			if(renderizando !=null && colVisual) renderizando.col.render(idea);
+		}
         //for(Obj renderizando : objeto) renderizando.render();
 	}
 	public void add(Ente ... entrantes){

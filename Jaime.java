@@ -18,9 +18,9 @@ import javafx.event.EventHandler;
 
 public class Jaime extends Application{
 	static Stage window;
-	static int vancho=1240,vlargo=720; //ventana
+	static int vancho=1280,vlargo=700; //ventana
 	static int nivel = 0;
-	Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaime.png")),15, vlargo/2, 100,100, 7, 50);
+	Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaime.png")),vancho/2, vlargo/2, 100,100, 7, 50,100);
 	Enemigo[] enem = new Enemigo[3];
 	public static void main(String[] args){
 		launch(args);
@@ -29,6 +29,7 @@ public class Jaime extends Application{
 		jug.col = new Colision(true);
 		//jug.col.addCuadros(new Cuadro(jug.x+25,jug.y+0,50,100));
 		jug.col.addRadial(jug.x+50, jug.y+50,50);
+		jug.addMira(new Image(getClass().getResourceAsStream("img/mira.png")),vancho/2, vlargo/2, 25,25);
 		window=primaryStage;
 		Canvas lienzo = new Canvas(vancho,vlargo);
 		Group grupo = new Group(lienzo);
@@ -37,13 +38,13 @@ public class Jaime extends Application{
 		Entorno[] ent = new Entorno[3];
 		ent[0] = new Entorno(vancho,vlargo,4);
 		ent[0].setFondo(new Image(getClass().getResourceAsStream("img/fondo.png")));
-		ent[0].add(jug);
 		for(int i = 0;i<3;i++){
-			enem[i] = new Enemigo(new Image(getClass().getResourceAsStream("img/enemigo1.png")), i*200+200,200,150,150, 5, 50);
+			enem[i] = new Enemigo(new Image(getClass().getResourceAsStream("img/enemigo1.png")), i*200+200,200,150,150, 5, 50,100);
 			enem[i].col = new Colision(true);
 			enem[i].col.addRadial(enem[i].x+75, enem[i].y+75, 90);
 			ent[0].add(enem[i]);
 		}
+		ent[0].add(jug);
 		Timeline clock = new Timeline(new KeyFrame(Duration.millis(10), e ->{
 			ent[0].update(idea);
 			jug.accion(ent[0]);
@@ -61,8 +62,9 @@ public class Jaime extends Application{
 			else if(e.getCode() == KeyCode.F3 && Entorno.colVisual) Entorno.colVisual = false;// Entorno.colVisual = false;	
 		});
         lienzo.setOnMouseMoved(e->{
-            
-        });
+            jug.mira.setPos((float)e.getX(), (float)e.getY());
+		});
+
         window.setScene(escena);
         window.show();
         clock.play();

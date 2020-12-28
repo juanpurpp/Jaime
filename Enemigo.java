@@ -6,8 +6,8 @@ import java.util.Random;
 public class Enemigo extends Ente{
 	private int movs;
 	private int dir;
-	public Enemigo(Image cont, float x, float y, float ancho, float alto, int vel, int atq){
-		super(cont,x,y,ancho,alto,vel,atq);
+	public Enemigo(Image cont, float x, float y, float ancho, float alto, int vel, int atq, int vida){
+		super(cont,x,y,ancho,alto,vel,atq,vida);
 	}
 	public void accion(Entorno ent){
 		Random rand = new Random();
