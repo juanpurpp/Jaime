@@ -12,6 +12,7 @@ public class Jugador extends Ente{
 	private int pts = 0;
 	private Boolean ulti = false;
 	public static int ultiPts =500;
+	private int usos = 0;
 	public Jugador(Image cont, float x, float y, float ancho, float alto, int vel, int atq,int vida){
 		super(cont,x,y,ancho,alto,vel,atq,vida);
 	}
@@ -46,7 +47,16 @@ public class Jugador extends Ente{
 	}
 	public void atacar(Entorno ent){
 		Random rand = new Random();
-		int dano = 10 + new Random().nextInt(Math.abs(this.atq-10));
+		int dano = 10 + new Random().nextInt(Math.abs(this.atq-10)); 
+		if(this.ulti){
+			dano = 50 + new Random().nextInt(Math.abs(this.atq*5-50));
+			this.usos++;
+			if(this.usos >= 3){
+				this.usos = 0;
+				this.ulti = false;
+
+			}
+		}
 		for(Ente enemigo:ent.entes){
 			if(enemigo != null && enemigo != this && enemigo.vida >= 0){
 				if(this.mira.distancia(enemigo.x+(enemigo.ancho/2),enemigo.y+(enemigo.alto/2))<enemigo.col.oval.radio){
@@ -55,6 +65,7 @@ public class Jugador extends Ente{
 					if(enemigo.vida <= 0){
 						this.pts+=50;
 					}
+					if(this.pts >500) this.pts = 500;
 				}
 			}
 		}
@@ -74,11 +85,14 @@ public class Jugador extends Ente{
         if(e.getCode() == KeyCode.W) this.movimientoW = false;
         if(e.getCode() == KeyCode.S) this.movimientoS = false;
 	}
-	@Override
-	public void render(GraphicsContext idea){
-		idea.drawImage(cont,x,y,ancho, alto);
-		idea.drawImage(this.mira.imgmira,this.mira.getX(),this.mira.getY(),this.mira.getAncho(),this.mira.getAlto());
-		HUD.render(idea, this);
+	public void alternarUlti(){
+		if(!this.ulti){
+			if(this.pts >= 500){
+				this.ulti = true;
+				this.vida = 100;
+				this.pts = 0;
+			}
+		}
 	}
 	public int getVida(){
 		return this.vida;
@@ -94,5 +108,11 @@ public class Jugador extends Ente{
 	}
 	public void setUlti(Boolean ulti){
 		this.ulti = ulti;
+	}
+	@Override
+	public void render(GraphicsContext idea){
+		idea.drawImage(cont,x,y,ancho, alto);
+		idea.drawImage(this.mira.imgmira,this.mira.getX(),this.mira.getY(),this.mira.getAncho(),this.mira.getAlto());
+		HUD.render(idea, this);
 	}
 }
