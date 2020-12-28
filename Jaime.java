@@ -18,12 +18,14 @@ import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 
 public class Jaime extends Application{
-	static Stage window;
-	static int vancho=1280,vlargo=700; //ventana
-	static int nivel = 0;
-	Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaime.png")),vancho/2, vlargo/2, 100,100, 7, 25,100);
-	Enemigo[] enem1 = new Enemigo[3];
-	Enemigo[] enem2 = new Enemigo[5];
+	public static Stage window;
+	public static int vancho=1280,vlargo=700; //ventana
+	public static int nivel = 0;
+	public Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaime.png")),vancho/2, vlargo/2, 100,100, 7, 25,100);
+	public Jefe arredondopus = new Jefe(new Image(getClass().getResourceAsStream("img/arredondopus.png")),vancho/2, vlargo/2, 200,200, 10, 50, 300);
+	public static Enemigo[] enem1 = new Enemigo[3];
+	public static Enemigo[] enem2 = new Enemigo[5];
+	public static Entorno[] ent = new Entorno[3];
 	public static void main(String[] args){
 		launch(args);
 	}
@@ -32,41 +34,25 @@ public class Jaime extends Application{
 		//jug.col.addCuadros(new Cuadro(jug.x+25,jug.y+0,50,100));
 		jug.col.addRadial(jug.x+50, jug.y+50,50);
 		jug.addMira(new Image(getClass().getResourceAsStream("img/mira.png")),vancho/2, vlargo/2, 25,25);
+
 		window=primaryStage;
 		Canvas lienzo = new Canvas(vancho,vlargo);
 		Group grupo = new Group(lienzo);
 		GraphicsContext idea = lienzo.getGraphicsContext2D();
-
-		Entorno[] ent = new Entorno[3];
-		ent[0] = new Entorno(vancho,vlargo,4);
-		ent[1] = new Entorno(vancho,vlargo,6);
-		for(int i = 0;i<3;i++){
-			enem1[i] = new Enemigo(new Image(getClass().getResourceAsStream("img/enemigo1.png")), i*200+200,200,150,150, 5, 10,100);
-			enem1[i].col = new Colision(true);
-			enem1[i].col.addRadial(enem1[i].x+75, enem1[i].y+75, 90);
-			ent[0].add(enem1[i]);
-			ent[0].addEnem(enem1[i]);
-		}
-		for(int i = 0;i<5;i++){
-			enem2[i] = new Enemigo(new Image(getClass().getResourceAsStream("img/enemigo1.png")), i*200+200,200,150,150, 5, 20,100);
-			enem2[i].col = new Colision(true);
-			enem2[i].col.addRadial(enem2[i].x+75, enem2[i].y+75, 90);
-			ent[1].add(enem2[i]);
-			ent[1].addEnem(enem2[i]);
-		}
-		for(int i = 0; i<2;i++){
-			ent[i].setFondo(new Image(getClass().getResourceAsStream("img/fondo.png")));
-			ent[i].add(jug);
-			ent[i].addJug(jug);
-		}
+		this.reiniciar();
 		Timeline clock = new Timeline(new KeyFrame(Duration.millis(10), e ->{
+			if(nivel == 3) window.close();
 			ent[nivel].update(idea);
 			jug.accion(ent[nivel]);
-			for(Enemigo accionando : ent[nivel].enemigos){
-				if(accionando != null) accionando.accion(ent[nivel]);
+			for(Enemigo accionando : ent[nivel].enemigos) if(accionando != null) accionando.accion(ent[nivel]);
+			if(ent[nivel].boss != null) ent[nivel].boss.accion(ent[nivel]);
+			if(ent[nivel].allDead()){
+				System.out.println(" nivel");
+				nivel++;
 			}
-			if(ent[nivel].allDead()) nivel++;
+			if(jug.vida <= 0) this.reiniciar();
 		}));
+		
 		clock.setCycleCount(Timeline.INDEFINITE);
 		Scene escena = new Scene(grupo);
 		escena.setCursor(Cursor.NONE);
@@ -91,5 +77,35 @@ public class Jaime extends Application{
         window.setScene(escena);
         window.show();
         clock.play();
+	}
+	public void reiniciar(){
+		nivel = 0;
+		jug.vida = 100;
+		ent[0] = new Entorno(vancho,vlargo,4);
+		ent[1] = new Entorno(vancho,vlargo,6);
+		ent[2] = new Entorno(vancho,vlargo,2);
+		for(int i = 0;i<3;i++){
+			enem1[i] = new Enemigo(new Image(getClass().getResourceAsStream("img/enemigo1.png")), i*200+200,200,150,150, 5, 10,100);
+			enem1[i].col = new Colision(true);
+			enem1[i].col.addRadial(enem1[i].x+75, enem1[i].y+75, 90);
+			ent[0].add(enem1[i]);
+			ent[0].addEnem(enem1[i]);
+		}
+		for(int i = 0;i<5;i++){
+			enem2[i] = new Enemigo(new Image(getClass().getResourceAsStream("img/enemigo1.png")), i*200+200,200,150,150, 5, 20,100);
+			enem2[i].col = new Colision(true);
+			enem2[i].col.addRadial(enem2[i].x+75, enem2[i].y+75, 90);
+			ent[1].add(enem2[i]);
+			ent[1].addEnem(enem2[i]);
+		}
+		arredondopus.col = new Colision(true);
+		arredondopus.col.addRadial(arredondopus.x+(arredondopus.ancho/2),arredondopus.y+(arredondopus.alto/2), arredondopus.ancho/2);
+		ent[2].add(arredondopus);
+		ent[2].addJefe(arredondopus);
+		for(int i = 0; i<3;i++){
+			ent[i].setFondo(new Image(getClass().getResourceAsStream("img/fondo.png")));
+			ent[i].add(jug);
+			ent[i].addJug(jug);
+		}
 	}
 }

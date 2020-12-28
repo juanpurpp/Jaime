@@ -7,6 +7,7 @@ public class Entorno{
 	public int xMax,yMax;
 	public Ente[] entes;
 	public Jugador jug;
+	public Jefe boss;
 	public Enemigo[] enemigos;
 	public int enemCant = 0;
 	public int entesCant = 0;
@@ -63,9 +64,17 @@ public class Entorno{
 		this.bg = bg;
 	}
 	public Boolean allDead(){
-		for(Enemigo enemigo: this.enemigos){
-			if(enemigo.vida>0)return false;
+		if(enemCant != 0){
+			for(Enemigo enemigo: this.enemigos){
+				if(enemigo.vida>0) return false;
+			}
+		}
+		if(boss != null){
+			if(boss.vida>0) return false;
 		}
 		return true;
+	}
+	public void addJefe(Jefe boss){
+		this.boss = boss;
 	}
 }
