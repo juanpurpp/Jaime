@@ -16,12 +16,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import java.util.Timer; 
+import java.util.TimerTask;
 
-public class Jaime extends Application{
+public class Jaime extends Application {
 	public static Stage window;
 	public static int vancho=1280,vlargo=700; //ventana
 	public static int nivel = 0;
-	public Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaime.png")),vancho/2, vlargo/2, 100,100, 7, 25,100);
+	public Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaimeder.png")),vancho/2, vlargo/2+250, 100,100, 7, 30,100);
 	public Jefe arredondopus = new Jefe(new Image(getClass().getResourceAsStream("img/arredondopus.png")),vancho/2, vlargo/2, 200,200, 10, 50, 300);
 	public static Enemigo[] enem1 = new Enemigo[3];
 	public static Enemigo[] enem2 = new Enemigo[5];
@@ -40,19 +42,40 @@ public class Jaime extends Application{
 		Group grupo = new Group(lienzo);
 		GraphicsContext idea = lienzo.getGraphicsContext2D();
 		this.reiniciar();
+		Cinematica lore = new Cinematica(new Image(getClass().getResourceAsStream("img/lore.png")), true);
+		Cinematica gano = new Cinematica(new Image(getClass().getResourceAsStream("img/ganar.png")), false);
+		Cinematica perdio = new Cinematica(new Image(getClass().getResourceAsStream("img/perder.png")), false);
 		Timeline clock = new Timeline(new KeyFrame(Duration.millis(10), e ->{
-			if(nivel == 3) window.close();
-			ent[nivel].update(idea);
-			jug.accion(ent[nivel]);
-			for(Enemigo accionando : ent[nivel].enemigos) if(accionando != null) accionando.accion(ent[nivel]);
-			if(ent[nivel].boss != null) ent[nivel].boss.accion(ent[nivel]);
-			if(ent[nivel].allDead()){
-				System.out.println(" nivel");
-				nivel++;
+			if(lore.mostrando) lore.mostrar(idea);
+			else if(gano.mostrando) gano.mostrar(idea); 
+			else if(perdio.mostrando) perdio.mostrar(idea); 
+			else{
+
+				ent[nivel].update(idea);
+				jug.accion(ent[nivel]);
+				for(Enemigo accionando : ent[nivel].enemigos) if(accionando != null) accionando.accion(ent[nivel]);
+				if(ent[nivel].boss != null) ent[nivel].boss.accion(ent[nivel]);
+				if(ent[nivel].allDead()){
+					System.out.println(" nivel");
+					nivel++;
+					jug.x=(vancho/2)+200;
+					jug.y=(vlargo/2)+200;
+					if(nivel == 3){
+						nivel = 0;
+						gano.mostrando = true;
+					}
+				}
+				if(jug.vida <= 0){
+					perdio.mostrando = true;
+					this.reiniciar();
+				}
 			}
-			if(jug.vida <= 0) this.reiniciar();
+			if(Ayuda.isAyuda){
+				idea.setGlobalAlpha(Ayuda.alpha);
+				idea.drawImage(Ayuda.ayudaimg,0,0);
+				idea.setGlobalAlpha(1);
+			}
 		}));
-		
 		clock.setCycleCount(Timeline.INDEFINITE);
 		Scene escena = new Scene(grupo);
 		escena.setCursor(Cursor.NONE);
@@ -61,6 +84,21 @@ public class Jaime extends Application{
 		});
         escena.setOnKeyReleased(e->{
 			jug.stop(e);
+			if(e.getCode() == KeyCode.ENTER){
+				if(gano.mostrando){
+					window.close();
+					System.exit(0);
+				}
+				lore.mostrando=false;
+				gano.mostrando=false;
+				perdio.mostrando=false;
+			}
+			if(e.getCode() == KeyCode.R){
+				if(gano.mostrando){
+					this.reiniciar();
+					gano.mostrando = false;
+				}
+			}
 			if(e.getCode() == KeyCode.F3 && !Entorno.colVisual) Entorno.colVisual = true;
 			else if(e.getCode() == KeyCode.F3 && Entorno.colVisual) Entorno.colVisual = false;
 			if(e.getCode() == KeyCode.F4 && !HUD.visible) HUD.visible = true;
@@ -74,9 +112,10 @@ public class Jaime extends Application{
 		lienzo.setOnMouseClicked(e->{
 			jug.atacar(ent[nivel]);
 		});
-        window.setScene(escena);
-        window.show();
-        clock.play();
+		window.setScene(escena);
+		Ayuda.initAyuda(idea);
+		window.show();
+		clock.play();
 	}
 	public void reiniciar(){
 		nivel = 0;
@@ -107,5 +146,10 @@ public class Jaime extends Application{
 			ent[i].add(jug);
 			ent[i].addJug(jug);
 		}
+	}
+	@Override
+	public void stop(){
+		System.exit(0);
+		// Save file
 	}
 }

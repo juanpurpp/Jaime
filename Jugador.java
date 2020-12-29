@@ -12,15 +12,25 @@ public class Jugador extends Ente{
 	private int pts = 0;
 	private Boolean ulti = false;
 	public static int ultiPts =500;
-	private int usos = 0;
+	private int usos = 0;//new Image(getClass().getResourceAsStream("img/jaimeizq.png")),new Image(getClass().getResourceAsStream("img/jaimeder.png")),
+	public Image normald=new Image(getClass().getResourceAsStream("img/jaimeder.png")), normali=new Image(getClass().getResourceAsStream("img/jaimeizq.png"));
+	public Image ultid=new Image(getClass().getResourceAsStream("img/ultider.png")), ultii=new Image(getClass().getResourceAsStream("img/ultiizq.png"));
 	public Jugador(Image cont, float x, float y, float ancho, float alto, int vel, int atq,int vida){
 		super(cont,x,y,ancho,alto,vel,atq,vida);
 	}
 	public void accion(Entorno ent){
 		for(int i = 0; i < this.vel; i++){
             float oldx = this.x, oldy = this.y;
-            if(this.movimientoA) this.x -=1;
-            if(this.movimientoD) this.x +=1;
+			if(this.movimientoA){
+				this.x -=1;
+				if(!this.ulti) this.cont = normali;
+				else this.cont = ultii;
+			}
+            if(this.movimientoD){
+				this.x +=1;
+				if(!this.ulti) this.cont = normald;
+				else this.cont = ultid;
+			}
             if(this.movimientoW) this.y -= 1;
 			if(this.movimientoS) this.y += 1;
 			if(this.col.tipo == false){

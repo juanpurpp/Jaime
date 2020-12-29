@@ -16,7 +16,7 @@ public class HUD{
 		vidatxt =new Image(HUD.class.getResourceAsStream("img/vidatxt.png"));
 		ptstxt = new Image(HUD.class.getResourceAsStream("img/ptstxt.png"));
 		bueno = new Image(HUD.class.getResourceAsStream("img/bueno.png"));
-		ulti = new Image(HUD.class.getResourceAsStream("img/ulti.png"));
+		ulti = new Image(HUD.class.getResourceAsStream("img/ultider.png"));
 		ultitxt = new Image(HUD.class.getResourceAsStream("img/ultitxt.png"));
     }
 	public static void render(GraphicsContext idea,Jugador jug){

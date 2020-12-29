@@ -33,6 +33,7 @@ public class Entorno{
 			if(renderizando !=null && colVisual){
 				if(renderizando.vida >0) renderizando.col.render(idea);
 			}
+
 		}
         //for(Obj renderizando : objeto) renderizando.render();
 	}
