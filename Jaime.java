@@ -18,13 +18,14 @@ import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import java.util.Timer; 
 import java.util.TimerTask;
+import java.util.Random;
 
 public class Jaime extends Application {
 	public static Stage window;
 	public static int vancho=1280,vlargo=700; //ventana
 	public static int nivel = 0;
-	public Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaimeder.png")),vancho/2, vlargo/2+250, 100,100, 7, 30,100);
-	public Jefe arredondopus = new Jefe(new Image(getClass().getResourceAsStream("img/arredondopus.png")),vancho/2, vlargo/2, 200,200, 10, 50, 300);
+	public Jugador jug = new Jugador(new Image(getClass().getResourceAsStream("img/jaimeder.png")),vancho/2, vlargo/2+100, 100,100, 7, 15,100);
+	public Jefe arredondopus = new Jefe(new Image(getClass().getResourceAsStream("img/arredondopus.png")),vancho/2, vlargo/2, 300,250, 10, 50, 300);
 	public static Enemigo[] enem1 = new Enemigo[3];
 	public static Enemigo[] enem2 = new Enemigo[5];
 	public static Entorno[] ent = new Entorno[3];
@@ -59,7 +60,7 @@ public class Jaime extends Application {
 					System.out.println(" nivel");
 					nivel++;
 					jug.x=(vancho/2)+200;
-					jug.y=(vlargo/2)+200;
+					jug.y=(vlargo/2)+100;
 					if(nivel == 3){
 						nivel = 0;
 						gano.mostrando = true;
@@ -72,7 +73,7 @@ public class Jaime extends Application {
 			}
 			if(Ayuda.isAyuda){
 				idea.setGlobalAlpha(Ayuda.alpha);
-				idea.drawImage(Ayuda.ayudaimg,0,0);
+				idea.drawImage(Ayuda.ayudaimg,0,vlargo-200);
 				idea.setGlobalAlpha(1);
 			}
 		}));
@@ -99,6 +100,12 @@ public class Jaime extends Application {
 					gano.mostrando = false;
 				}
 			}
+			if(e.getCode() == KeyCode.E){
+				if(jug.wates <= 0){
+					Random rand = new Random();
+					jug.wates = 1+rand.nextInt(9);
+				}
+			}
 			if(e.getCode() == KeyCode.F3 && !Entorno.colVisual) Entorno.colVisual = true;
 			else if(e.getCode() == KeyCode.F3 && Entorno.colVisual) Entorno.colVisual = false;
 			if(e.getCode() == KeyCode.F4 && !HUD.visible) HUD.visible = true;
@@ -119,7 +126,10 @@ public class Jaime extends Application {
 	}
 	public void reiniciar(){
 		nivel = 0;
+		jug.setUlti(false);
 		jug.vida = 100;
+		jug.setPts(0);
+		arredondopus.vida = arredondopus.vidaTotal;
 		ent[0] = new Entorno(vancho,vlargo,4);
 		ent[1] = new Entorno(vancho,vlargo,6);
 		ent[2] = new Entorno(vancho,vlargo,2);

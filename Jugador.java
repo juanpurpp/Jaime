@@ -10,6 +10,7 @@ import java.util.Random;
 public class Jugador extends Ente{
 	public Mira mira;
 	private int pts = 0;
+	public int wates = 0;
 	private Boolean ulti = false;
 	public static int ultiPts =500;
 	private int usos = 0;//new Image(getClass().getResourceAsStream("img/jaimeizq.png")),new Image(getClass().getResourceAsStream("img/jaimeder.png")),
@@ -19,6 +20,11 @@ public class Jugador extends Ente{
 		super(cont,x,y,ancho,alto,vel,atq,vida);
 	}
 	public void accion(Entorno ent){
+		if(this.wates > 0){
+			this.atacar2(ent);
+			this.wates--;
+			this.usos++;
+		}
 		for(int i = 0; i < this.vel; i++){
             float oldx = this.x, oldy = this.y;
 			if(this.movimientoA){
@@ -80,6 +86,31 @@ public class Jugador extends Ente{
 			}
 		}
 	}
+	public void atacar2(Entorno ent){
+		Random rand = new Random();
+		int dano = 1+ new Random().nextInt(Math.abs(this.atq/2-1)); 
+		if(this.ulti){
+			dano = 50 + new Random().nextInt(Math.abs((int)(this.atq/2*2.5-50)));
+			this.usos++;
+			if(this.usos >= 3){
+				this.usos = 0;
+				this.ulti = false;
+			}
+		}
+		for(Ente enemigo:ent.entes){
+			if(enemigo != null && enemigo != this && enemigo.vida >= 0){
+				if(this.distancia(enemigo.x+(enemigo.ancho/2),enemigo.y+(enemigo.alto/2))<this.col.oval.radio*1.5+enemigo.col.oval.radio){
+					enemigo.vida -= dano;
+					this.pts+=dano;
+					if(enemigo.vida <= 0){
+						this.pts+=50;
+					}
+					if(this.pts >500) this.pts = 500;
+				}
+			}
+		}
+	}
+	
 	public void hudVisible(Boolean opcion){
 		HUD.visible = opcion;
 	}

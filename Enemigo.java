@@ -5,15 +5,15 @@ import javafx.scene.image.Image;
 import java.util.Random;
 
 public class Enemigo extends Ente{
-	private int movs;
-	private int dir;
+	protected int movs;
+	protected int dir;
 	public Enemigo(Image cont, float x, float y, float ancho, float alto, int vel, int atq, int vida){
 		super(cont,x,y,ancho,alto,vel,atq,vida);
 	}
 	public void accion(Entorno ent){
 		if(this.vida > 0){
 			Random rand = new Random();
-			if(rand.nextInt(10000) < 25){
+			if(rand.nextInt(10000) < 30){
 				for(int i = 0; i<ent.entes.length;i++){
 					if(ent.entes[i]!=null && ent.entes[i].getClass() == Jugador.class){
 						Random azar = new Random();

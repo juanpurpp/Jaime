@@ -12,14 +12,14 @@ public abstract class Ayuda extends TimerTask{
 	}
 	public static void initAyuda(GraphicsContext idea){
 		Timer timing = new Timer();
-		idea.drawImage(Ayuda.ayudaimg,0,0);
+		idea.drawImage(Ayuda.ayudaimg,0,Jaime.vlargo-100);
 		isAyuda=true;
 		timing.schedule(new TimerTask(){
 			@Override
 			public void run(){
 				Ayuda.alpha -= 0.01;
 			}
-		}, 4000,10);
+		}, 6000,10);
 		if(Ayuda.alpha == 0) timing.cancel();
 	}
 }
